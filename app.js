@@ -29,6 +29,8 @@ var usersRouter = require('./routes/users');
 
 let { checkJWTToken } = require("./routes/middleware");
 
+const buildPath = path.join(__dirname, 'frontend/build')
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -42,6 +44,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 //adding checkJWT token here ensures that each endpoint applicable to the user's route must have a valid jwt-token to proceed with any data manipulation in the database.
 app.use('/users', usersRouter);
+
+app.use(express.static(buildPath))
+
+// gets the static files from the build folder
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'))
+})
 
 //connnect to mongo cars database
 mongoose.connect('mongodb+srv://alexelliott90:A35A0mTUegZMMWOZ@todoapp.zwexra2.mongodb.net/', {
